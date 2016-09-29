@@ -96,10 +96,15 @@ char *xar_get_path(xar_file_t f) {
 	for(i = XAR_FILE(f)->parent; i; i = XAR_FILE(i)->parent) {
 		int err;
 		const char *name;
-	       	xar_prop_get(i, "name", &name);
+		xar_prop_get(i, "name", &name);
 		tmp = ret;
 		err = asprintf(&ret, "%s/%s", name, tmp);
 		free(tmp);
+		if ( err == -1 ) {
+			// ret value is undefined, so it should not be returned
+			free(ret);
+			ret = NULL;
+		}
 	}
 
 	return ret;
