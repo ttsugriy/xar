@@ -190,7 +190,7 @@ static int32_t macho_parse(xar_file_t f, void *in, size_t inlen, struct _macho_c
 			if( (inlen-off) >= sizeof(struct mach_header) ) {
 				const char *cpustr;
 				const char *typestr;
-        char *typestr2;
+				char *typestr2;
 				struct mach_header *mh = (struct mach_header *)tmpin;
 				switch(mh->magic) {
 				case 0xcffaedfe:
