@@ -189,7 +189,8 @@ static int32_t macho_parse(xar_file_t f, void *in, size_t inlen, struct _macho_c
 			tmpin += off;
 			if( (inlen-off) >= sizeof(struct mach_header) ) {
 				const char *cpustr;
-				char *typestr, *typestr2;
+				const char *typestr;
+        char *typestr2;
 				struct mach_header *mh = (struct mach_header *)tmpin;
 				switch(mh->magic) {
 				case 0xcffaedfe:
@@ -210,7 +211,7 @@ static int32_t macho_parse(xar_file_t f, void *in, size_t inlen, struct _macho_c
 					context->state = lf_none;
 					return (int32_t)inlen;
 				};
-				
+
 				if( context->me[context->curme].byteswapped ) {
 					context->me[context->curme].mh.magic = xar_swap32(mh->magic);
 					context->me[context->curme].mh.cputype = xar_swap32(mh->cputype);
@@ -222,7 +223,7 @@ static int32_t macho_parse(xar_file_t f, void *in, size_t inlen, struct _macho_c
 				} else {
 					memcpy(&context->me[context->curme].mh, tmpin, sizeof(struct mach_header));
 				}
-				
+
 				cpustr = macho_cpustr(context->me[context->curme].mh.cputype);
 
 				switch(context->me[context->curme].mh.filetype) {
@@ -242,7 +243,7 @@ static int32_t macho_parse(xar_file_t f, void *in, size_t inlen, struct _macho_c
 
 				if( xar_prop_get(f, "contents/type", (const char **)&typestr2) ) {
 					xar_prop_set(f, "contents/type", typestr);
-				}			
+				}
 				if (asprintf(&typestr2, "contents/%s/type", cpustr) != -1) {
 					xar_prop_set(f, typestr2, typestr);
 					free(typestr2);
@@ -407,6 +408,6 @@ int32_t xar_macho_done(xar_t x, xar_file_t f, xar_prop_t p, void **context) {
 			free(MACHO_CONTEXT(context)->arches);
 		free(*context);
 	}
-	
+
 	return 0;
 }
